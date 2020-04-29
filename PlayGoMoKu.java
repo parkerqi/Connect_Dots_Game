@@ -4,13 +4,18 @@ import java.util.Scanner;
 /**
  * This is the runner class for playing GoMoKu between two players
  * @author Parker Qi
+ * @author parker.qi@hotmail.com
  * @version 1.0
  */
 public class PlayGoMoKu {
     private static Scanner sc = new Scanner(System.in);
+    /**
+     * The runner method for the game
+     * @param arg accepts two integers, the size of board and the connects to be made to win the game
+     */
     public static void main(String[] arg) {
-        Board board = new Board(4, 3);
-        //Board board = new Board(Integer.parseInt(arg[0]) , Integer.parseInt(arg[1]));
+        //Board board = new Board(3, 3);
+        Board board = new Board(Integer.parseInt(arg[0]) , Integer.parseInt(arg[1]));
         System.out.println("Select mode: PvP => p, PvC => c");
         boolean gameOver = false;
         while (!gameOver) {
@@ -30,10 +35,9 @@ public class PlayGoMoKu {
             }
         }
         sc.close();
-        board.clearBoard();
     }
 
-    public static void playPvP(Board board) {
+    private static void playPvP(Board board) {
         Player player1 = new Player(true);
         Player player2 = new Player(false);
         char gameStatus = 'E';
@@ -104,7 +108,11 @@ public class PlayGoMoKu {
         }
     }
 
-    public static void playPvC(Board board) {
+    /**
+     * play PvC with this method, the human always goes first
+     * @param board the board to place PvC on
+     */
+    private static void playPvC(Board board) {
         AI ai = new AI(false);
         Player player = new Player(true);
         char gameStatus = 'E';

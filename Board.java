@@ -1,3 +1,9 @@
+/**
+ * This is the board for playing connecting games.
+ * The size of board and the wining condition can be anything player wants.
+ * @version 1.0.0
+ * @author Parker Qi
+ */
 public class Board {
     private int size;
     private Piece[][] board;
@@ -5,6 +11,11 @@ public class Board {
     private int ignoreL;
     private int ignoreR;
 
+    /**
+     * The constructor for the board
+     * @param size the size of board, the board will always be a square
+     * @param winCondition the number of pieces need to be connected to win. (diaginal connect counts)
+     */
     public Board(int size, int winCondition) {
         this.size = size;
         this.winCondition = winCondition;
@@ -13,6 +24,10 @@ public class Board {
         ignoreR = board[0].length- ignoreL;
     }
 
+    /**
+     * Deep copy construcor of Board
+     * @param b board object
+     */
     public Board(Board b) {
         this.size = b.getBoardSize();
         this.winCondition = b.getWinCondition();
@@ -30,12 +45,21 @@ public class Board {
         ignoreR = board[0].length- ignoreL;
     }
 
+    /**
+     * default constructor 
+     * it will be created as a Gomoku board
+     */
     public Board() {
         this.size = 15;
         this.winCondition = 5;
         board = new Piece[this.size][this.size];
     }
 
+    /**
+     * To place a piece on the board (should only be used by player object)
+     * @param p piece object to place on the board
+     * @throws OverridingLocationException thrown when the location has been occupied already
+     */
     public void placePiece(Piece p) throws OverridingLocationException{
         int[] a = p.getLocation();
         if (board[a[1]][a[0]] != null) {
@@ -44,12 +68,7 @@ public class Board {
             board[a[1]][a[0]] = p;
         }
     }
-/*
-    private void removePiece(Piece p) {
-        int[] a = p.getLocation();
-        board[a[1]][a[0]] = null;
-    }
-*/
+
     /**
      * check vertical winner
      * @return X if player1 won, O if player2 won, E if no player won, T if tie
@@ -267,6 +286,9 @@ public class Board {
         return true;
     }
 
+    /**
+     * Print out the board position in the terminal
+     */
     public void printBoard() {
         for (int i = 0; i < size; i++) {
             printBoundry();
@@ -289,22 +311,37 @@ public class Board {
         System.out.println();
     }
 
-    public void clearBoard() {
-        board = new Piece[15][15];
-    }
-
-    public Piece[][] getStatus() {
+    /**
+     * It return the current situation of the board in terms of a 2D array of Piece
+     * @return the board position
+     */
+    private Piece[][] getStatus() {
         return board;
-    }
+    }  
 
+    /**
+     * return the size of the board
+     * @return size of board
+     */
     public int getBoardSize() {
         return size;
     }
 
+    /**
+     * return the win condition of the board
+     * @return winCondition
+     */
     public int getWinCondition() {
         return winCondition;
     }
 
+    /**
+     * check if the location on board is available
+     * !!!Attention!!! x, y location is the array location which means from 0 to size-1
+     * @param x the x axis location 
+     * @param y the y axis location
+     * @return if the location is empty or not, empty => true
+     */
     public boolean isAvailable(int x, int y) {
         if (board[y][x] == null) {
             return true;
