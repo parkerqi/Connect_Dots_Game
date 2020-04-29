@@ -7,6 +7,7 @@
 public class AI {
     private final boolean type;
     private int call = 0;
+    private int depthReached = 999;
     /**
      * Constructor for the AI
      * @param type if AI is playing X, type = true; if playing O, type = false
@@ -21,8 +22,10 @@ public class AI {
      */
     public void placePiece(Board b) {
         int[] a = bestMove(b);
-        System.out.println(call);
+        System.out.println("minimax called: " + call);
+        System.out.println("depth remaining: " + depthReached);
         call = 0;
+        depthReached = 999;
         Piece p = new Piece(a[1],a[0], this.type);
         try {
             b.placePiece(p);
@@ -53,7 +56,7 @@ public class AI {
                     } catch (OverridingLocationException e) {
                         System.out.println("Unexpected Error!");
                     }
-                    int score = miniMax(childBoard, 15, -999, 999, false);
+                    int score = miniMax(childBoard, 55, -999, 999, false);
                     if (score > bestScore) {
                         bestScore = score;
                         bestMove = new int[]{i, j};
@@ -73,6 +76,9 @@ public class AI {
      */
     private int miniMax(Board position, int depth, int alpha, int beta, boolean maximizingPlayer) {
         call++;
+        if (depth < depthReached) {
+            depthReached = depth;
+        }
         char symbol;
         if (type) {
             symbol = 'X';
@@ -105,7 +111,7 @@ public class AI {
                         } catch (OverridingLocationException e) {
                             System.out.println("Unexpected Error!");
                         }
-                        int evaluation = miniMax(childrenPosition, depth, alpha, beta, false);
+                        int evaluation = miniMax(childrenPosition, depth - 1, alpha, beta, false);
                         maxEvaluation = Math.max(evaluation, maxEvaluation);
                         alpha = Math.max(alpha, evaluation);
                         if (beta <= alpha) {
@@ -130,7 +136,7 @@ public class AI {
                         } catch (OverridingLocationException e) {
                             System.out.println("Unexpected Error!");
                         }
-                        int evaluation = miniMax(childrenPosition, depth, alpha, beta, true);
+                        int evaluation = miniMax(childrenPosition, depth - 1, alpha, beta, true);
                         minEvaluation = Math.min(minEvaluation, evaluation);
                         beta = Math.min(beta, evaluation);
                         if (beta <= alpha) {
