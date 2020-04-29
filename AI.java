@@ -2,11 +2,11 @@
  * the game AI uses Minimax to find the best move.
  * @author Parker Qi
  * @author Parker.qi@hotmail.com
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class AI {
     private final boolean type;
-
+    private int calls;
     /**
      * Constructor for the AI
      * @param type if AI is playing X, type = true; if playing O, type = false
@@ -21,6 +21,7 @@ public class AI {
      */
     public void placePiece(Board b) {
         int[] a = bestMove(b);
+        System.out.println(calls);
         Piece p = new Piece(a[1],a[0], this.type);
         try {
             b.placePiece(p);
@@ -51,7 +52,7 @@ public class AI {
                     } catch (OverridingLocationException e) {
                         System.out.println("Unexpected Error!");
                     }
-                    int score = miniMax(childBoard, 25, false);
+                    int score = miniMax(childBoard, 50, -999, 999, false);
                     if (score > bestScore) {
                         bestScore = score;
                         bestMove = new int[]{i, j};
@@ -69,8 +70,8 @@ public class AI {
      * @param maximizingPlayer if the current position is to find best move or worst move
      * @return the evaluation for current position
      */
-    private int miniMax(Board position, int depth, boolean maximizingPlayer) {
-        //System.out.println(depth);
+    private int miniMax(Board position, int depth, int alpha, int beta, boolean maximizingPlayer) {
+        calls++;
         char symbol;
         if (type) {
             symbol = 'X';
@@ -83,7 +84,7 @@ public class AI {
             if (c == 'T') {
                 return 0;
             } else if (c == symbol) {
-                return 2;
+                return 1;
             } else {
                 return -1;
             }
@@ -92,6 +93,7 @@ public class AI {
         if (maximizingPlayer) {
             int maxEvaluation = -999;
             //for all possiable moves
+            outer: 
             for (int i = 0; i < position.getBoardSize(); i++) {
                 for (int j = 0; j < position.getBoardSize(); j++) {
                     if (position.isAvailable(j, i)) {
@@ -102,8 +104,12 @@ public class AI {
                         } catch (OverridingLocationException e) {
                             System.out.println("Unexpected Error!");
                         }
-                        int evaluation = miniMax(childrenPosition, depth - 1, false);
-                        maxEvaluation = Math.max(evaluation, maxEvaluation); 
+                        int evaluation = miniMax(childrenPosition, depth - 1, alpha, beta, false);
+                        maxEvaluation = Math.max(evaluation, maxEvaluation);
+                        alpha = Math.max(alpha, evaluation);
+                        if (beta <= alpha) {
+                            break outer;
+                        }
                     }
                 }
             }
@@ -112,6 +118,7 @@ public class AI {
             //if evaluating minimizing player
             int minEvaluation = 999;
             //for all possiable moves
+            outer: 
             for (int i = 0; i < position.getBoardSize(); i++) {
                 for (int j = 0; j < position.getBoardSize(); j++) {
                     if (position.isAvailable(j, i)) {
@@ -122,8 +129,12 @@ public class AI {
                         } catch (OverridingLocationException e) {
                             System.out.println("Unexpected Error!");
                         }
-                        int evaluation = miniMax(childrenPosition, depth - 1, true);
+                        int evaluation = miniMax(childrenPosition, depth - 1, alpha, beta, true);
                         minEvaluation = Math.min(minEvaluation, evaluation);
+                        beta = Math.min(beta, evaluation);
+                        if (beta <= alpha) {
+                            break outer;
+                        }
                     }
                 }
             }
