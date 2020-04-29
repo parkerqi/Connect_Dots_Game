@@ -14,7 +14,7 @@ public class PlayGoMoKu {
      * @param arg accepts two integers, the size of board and the connects to be made to win the game
      */
     public static void main(String[] arg) {
-        //Board board = new Board(3, 3);
+        //Board board = new Board(4, 3);
         Board board = new Board(Integer.parseInt(arg[0]) , Integer.parseInt(arg[1]));
         System.out.println("Select mode: PvP => p, PvC => c");
         boolean gameOver = false;
