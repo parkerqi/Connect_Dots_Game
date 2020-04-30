@@ -5,7 +5,7 @@ import java.util.Scanner;
  * This is the runner class for playing GoMoKu between two players
  * @author Parker Qi
  * @author parker.qi@hotmail.com
- * @version 1.0
+ * @version 1.0.0
  */
 public class PlayGoMoKu {
     private static Scanner sc = new Scanner(System.in);

@@ -56,7 +56,7 @@ public class AI {
                     } catch (OverridingLocationException e) {
                         System.out.println("Unexpected Error!");
                     }
-                    int score = miniMax(childBoard, 55, -999, 999, false);
+                    int score = miniMax(childBoard, 13, -999, 999, false);
                     if (score > bestScore) {
                         bestScore = score;
                         bestMove = new int[]{i, j};
@@ -99,7 +99,7 @@ public class AI {
         //if evaluating maximizing player
         if (maximizingPlayer) {
             int maxEvaluation = -999;
-            //for all possiable moves
+            //for all children of node
             outer: 
             for (int i = 0; i < position.getBoardSize(); i++) {
                 for (int j = 0; j < position.getBoardSize(); j++) {
@@ -113,7 +113,7 @@ public class AI {
                         }
                         int evaluation = miniMax(childrenPosition, depth - 1, alpha, beta, false);
                         maxEvaluation = Math.max(evaluation, maxEvaluation);
-                        alpha = Math.max(alpha, evaluation);
+                        alpha = Math.max(alpha, maxEvaluation);
                         if (beta <= alpha) {
                             break outer;
                         }
@@ -138,7 +138,7 @@ public class AI {
                         }
                         int evaluation = miniMax(childrenPosition, depth - 1, alpha, beta, true);
                         minEvaluation = Math.min(minEvaluation, evaluation);
-                        beta = Math.min(beta, evaluation);
+                        beta = Math.min(beta, minEvaluation);
                         if (beta <= alpha) {
                             break outer;
                         }
