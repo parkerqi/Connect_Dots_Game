@@ -5,7 +5,14 @@ import java.util.Scanner;
  * This is the runner class for playing GoMoKu with AI
  * @author Parker Qi
  * @author parker.qi@hotmail.com
- * @version 1.0.0
+ * @version 1.1.0
+ * 
+ * There are 4 major changes in this version
+ * 1. Board class is now static
+ * 2. the playing board is now a char 2d array
+ * 3. Piece class is no longer in use
+ * 4. abstract class Player added
+ * these are done to refrain deep copying in minimax
  */
 public class AIFirst {
     private static Scanner sc = new Scanner(System.in);
@@ -14,7 +21,7 @@ public class AIFirst {
      * @param arg accepts two integers, the size of board and the connects to be made to win the game
      */
     public static void main(String[] arg) {
-        //Board board = new Board(4, 3);
+        //Board board = new Board(3, 3);
         Board board = new Board(Integer.parseInt(arg[0]) , Integer.parseInt(arg[1]));
         boolean gameOver = false;
         while (!gameOver) {
@@ -30,7 +37,7 @@ public class AIFirst {
      */
     private static void playPvC(Board board) {
         AI ai = new AI(true);
-        Player player = new Player(false);
+        HumanPlayer player = new HumanPlayer(false);
         char gameStatus = 'E';
         while (gameStatus == 'E') {
             int x = -1;
@@ -38,12 +45,12 @@ public class AIFirst {
             boolean ifNextTurn = false;
             
             //AI's turn
-            ai.placePiece(board);
+            ai.placePiece(Board.getStatus());
             System.out.println("AI's turn.");
-            board.printBoard();
+            Board.printBoard();
 
             //check game status
-            gameStatus = board.checkWin();
+            gameStatus = Board.checkWin();
             if (gameStatus == 'X') {
                 System.out.println("AI wins.");
             } else if (gameStatus == 'T') {
@@ -54,10 +61,10 @@ public class AIFirst {
                         //player's turn
                         System.out.println("Your turn.");
                         System.out.println("Type your piece's x axis.");
-                        x = sc.nextInt() - 1;
+                        x = sc.nextInt();
                         System.out.println("Type your piece's y axis.");
-                        y = sc.nextInt() - 1;
-                        if (!player.place(x, y, board)) {
+                        y = sc.nextInt();
+                        if (!player.place(x, y)) {
                             System.out.println("Your coordinate is invalid.");
                             ifNextTurn = false;
                         } else {
@@ -69,10 +76,10 @@ public class AIFirst {
                         ifNextTurn = false;
                     }
                 } while (!ifNextTurn);
-                board.printBoard();
+                Board.printBoard();
 
                 //check game status
-                gameStatus = board.checkWin();
+                gameStatus = Board.checkWin();
                 if (gameStatus == 'O') {
                     System.out.println("You win.");
                 } else if (gameStatus == 'T') {

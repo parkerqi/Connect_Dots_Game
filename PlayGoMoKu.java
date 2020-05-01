@@ -5,7 +5,9 @@ import java.util.Scanner;
  * This is the runner class for playing GoMoKu between two players
  * @author Parker Qi
  * @author parker.qi@hotmail.com
- * @version 1.0.0
+ * @version 1.1.0
+ * 
+ * update summary see AIFirst class
  */
 public class PlayGoMoKu {
     private static Scanner sc = new Scanner(System.in);
@@ -38,10 +40,10 @@ public class PlayGoMoKu {
     }
 
     private static void playPvP(Board board) {
-        Player player1 = new Player(true);
-        Player player2 = new Player(false);
+        HumanPlayer player1 = new HumanPlayer(true);
+        HumanPlayer player2 = new HumanPlayer(false);
         char gameStatus = 'E';
-        board.printBoard();
+        Board.printBoard();
         while (gameStatus == 'E') {
             int x = -1;
             int y = -1;
@@ -51,10 +53,10 @@ public class PlayGoMoKu {
                     //player 1's turn
                     System.out.println("Player 1's turn.");
                     System.out.println("Type your piece's x axis.");
-                    x = sc.nextInt() - 1;
+                    x = sc.nextInt();
                     System.out.println("Type your piece's y axis.");
-                    y = sc.nextInt() - 1;
-                    if (!player1.place(x, y, board)) {
+                    y = sc.nextInt();
+                    if (!player1.place(x, y)) {
                         System.out.println("Your coordinate is invalid.");
                         ifNextTurn = false;
                     } else {
@@ -66,10 +68,10 @@ public class PlayGoMoKu {
                     ifNextTurn = false;
                 }
             } while (!ifNextTurn);
-            board.printBoard();
+            Board.printBoard();
 
             //check game status
-            gameStatus = board.checkWin();
+            gameStatus = Board.checkWin();
             if (gameStatus == 'X') {
                 System.out.println("Player 1 wins.");
             } else if (gameStatus == 'T') {
@@ -80,10 +82,10 @@ public class PlayGoMoKu {
                         //player 2's turn
                         System.out.println("Player 2's turn.");
                         System.out.println("Type your piece's x axis.");
-                        x = sc.nextInt() - 1;
+                        x = sc.nextInt();
                         System.out.println("Type your piece's y axis.");
-                        y = sc.nextInt() - 1;
-                        if (!player2.place(x, y, board)) {
+                        y = sc.nextInt();
+                        if (!player2.place(x, y)) {
                             System.out.println("Your coordinate is invalid.");
                             ifNextTurn = false;
                         } else {
@@ -95,10 +97,10 @@ public class PlayGoMoKu {
                         ifNextTurn = false;
                     }
                 } while (!ifNextTurn);
-                board.printBoard();
+                Board.printBoard();
 
                 //check game status
-                gameStatus = board.checkWin();
+                gameStatus = Board.checkWin();
                 if (gameStatus == 'O') {
                     System.out.println("Player 2 wins.");
                 } else if (gameStatus == 'T') {
@@ -114,9 +116,9 @@ public class PlayGoMoKu {
      */
     private static void playPvC(Board board) {
         AI ai = new AI(false);
-        Player player = new Player(true);
+        HumanPlayer player = new HumanPlayer(true);
         char gameStatus = 'E';
-        board.printBoard();
+        Board.printBoard();
         while (gameStatus == 'E') {
             int x = -1;
             int y = -1;
@@ -126,10 +128,10 @@ public class PlayGoMoKu {
                     //player's turn
                     System.out.println("Your turn.");
                     System.out.println("Type your piece's x axis.");
-                    x = sc.nextInt() - 1;
+                    x = sc.nextInt();
                     System.out.println("Type your piece's y axis.");
-                    y = sc.nextInt() - 1;
-                    if (!player.place(x, y, board)) {
+                    y = sc.nextInt();
+                    if (!player.place(x, y)) {
                         System.out.println("Your coordinate is invalid.");
                         ifNextTurn = false;
                     } else {
@@ -141,10 +143,10 @@ public class PlayGoMoKu {
                     ifNextTurn = false;
                 }
             } while (!ifNextTurn);
-            board.printBoard();
+            Board.printBoard();
 
             //check game status
-            gameStatus = board.checkWin();
+            gameStatus = Board.checkWin();
             if (gameStatus == 'X') {
                 System.out.println("You win.");
             } else if (gameStatus == 'T') {
@@ -152,12 +154,12 @@ public class PlayGoMoKu {
             } else {
 
                 //AI's turn
-                ai.placePiece(board);
+                ai.placePiece(Board.getStatus());
                 System.out.println("AI's turn.");
-                board.printBoard();
+                Board.printBoard();
 
                 //check game status
-                gameStatus = board.checkWin();
+                gameStatus = Board.checkWin();
                 if (gameStatus == 'O') {
                     System.out.println("AI wins.");
                 } else if (gameStatus == 'T') {

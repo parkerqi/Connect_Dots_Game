@@ -1,15 +1,17 @@
 /**
  * This is the board for playing connecting games.
  * The size of board and the wining condition can be anything player wants.
- * @version 1.0.0
  * @author Parker Qi
+ * @version 2.0.0
+ * 
+ * update summary see AIFirst class
  */
 public class Board {
-    private int size;
-    private Piece[][] board;
-    private int winCondition;
-    private int ignoreL;
-    private int ignoreR;
+    private static int size;
+    public static char[][] board;
+    private static int winCondition;
+    private static int ignoreL;
+    private static int ignoreR;
 
     /**
      * The constructor for the board
@@ -17,32 +19,23 @@ public class Board {
      * @param winCondition the number of pieces need to be connected to win. (diaginal connect counts)
      */
     public Board(int size, int winCondition) {
-        this.size = size;
-        this.winCondition = winCondition;
-        board = new Piece[size][size];
-        ignoreL = winCondition - 1;
-        ignoreR = board[0].length- ignoreL;
+        Board.size = size;
+        Board.winCondition = winCondition;
+        Board.board = new char[size][size];
+        Board.ignoreL = winCondition - 1;
+        Board.ignoreR = board[0].length- ignoreL;
     }
 
     /**
-     * Deep copy construcor of Board
-     * @param b board object
+     * Construcor of Board
+     * @param b piece 2D array
      */
-    public Board(Board b) {
-        this.size = b.getBoardSize();
-        this.winCondition = b.getWinCondition();
-        Piece[][] sta = b.getStatus();
-        board = new Piece[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (sta[i][j] != null) {
-                    this.board[i][j] = sta[i][j];                   
-                }
-
-            }
-        }
-        ignoreL = winCondition - 1;
-        ignoreR = board[0].length- ignoreL;
+    public Board(char[][] b, int winCondition) {
+        Board.size = b[0].length;
+        Board.winCondition = winCondition;
+        Board.board = b;
+        Board.ignoreL = winCondition - 1;
+        Board.ignoreR = board[0].length- ignoreL;
     }
 
     /**
@@ -50,9 +43,9 @@ public class Board {
      * it will be created as a Gomoku board
      */
     public Board() {
-        this.size = 15;
-        this.winCondition = 5;
-        board = new Piece[this.size][this.size];
+        Board.size = 15;
+        Board.winCondition = 5;
+        Board.board = new char[Board.size][Board.size];
     }
 
     /**
@@ -60,12 +53,13 @@ public class Board {
      * @param p piece object to place on the board
      * @throws OverridingLocationException thrown when the location has been occupied already
      */
-    public void placePiece(Piece p) throws OverridingLocationException{
-        int[] a = p.getLocation();
-        if (board[a[1]][a[0]] != null) {
+    public static void placePiece(int x, int y, Boolean player) throws OverridingLocationException, IndexOutOfBoundsException{
+        if (board[y][x] != 0) {
             throw new OverridingLocationException("");
+        } else if (player){
+            board[y][x] = 'X';
         } else {
-            board[a[1]][a[0]] = p;
+            board[y][x] = 'O';
         }
     }
 
@@ -73,7 +67,7 @@ public class Board {
      * check vertical winner
      * @return X if player1 won, O if player2 won, E if no player won, T if tie
      */
-    public char checkWin() {
+    public static char checkWin() {
         char h = checkH();
         char v = checkV();
         char c = checkCross();
@@ -89,19 +83,19 @@ public class Board {
         }
     }
 
-    private char checkV() {
+    private static char checkV() {
         int xStrikes = 0;
         int oStrikes = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < Board.size; i++) {
+            for (int j = 0; j < Board.size; j++) {
                 try {
-                    if (board[j][i].getType()) {
+                    if (board[j][i] == 'X') {
                         xStrikes++;
                         if (xStrikes == winCondition) {
                             return 'X';
                         }
                         oStrikes = 0;
-                    } else if (!board[j][i].getType()){
+                    } else if (board[j][i] == 'O'){
                         oStrikes++;
                         if (oStrikes == winCondition) {
                             return 'O';
@@ -117,19 +111,19 @@ public class Board {
         return 'E';
     }
 
-    private char checkH() {
+    private static char checkH() {
         int xStrikes = 0;
         int oStrikes = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 try {
-                       if (board[i][j].getType()) {
+                       if (board[i][j] == 'X') {
                         xStrikes++;
                         if (xStrikes == winCondition) {
                             return 'X';
                         }
                         oStrikes = 0;
-                    } else if (!board[i][j].getType()){
+                    } else if (board[i][j] == 'O'){
                         oStrikes++;
                         if (oStrikes == winCondition) {
                             return 'O';
@@ -145,7 +139,7 @@ public class Board {
         return 'E';
     }
 
-    private char checkCross() {
+    private static char checkCross() {
         char a = checkUpperNDirection();
         char b = checkLowerNDirection();
         char c = checkUpperPDirection();
@@ -160,19 +154,19 @@ public class Board {
     }
 
     //check upper half \ direction
-    private char checkUpperNDirection() {
+    private static char checkUpperNDirection() {
         int xStrikes = 0;
         int oStrikes = 0;
         for (int i = ignoreR; i >= 0; i--) {
             for (int j = i, k = 0; j < size; j++, k++) {
                 try {
-                    if (board[k][j].getType()) {
+                    if (board[k][j] == 'X') {
                         xStrikes++;
                         if (xStrikes == winCondition) {
                             return 'X';
                         }
                         oStrikes = 0;
-                    } else if (!board[k][j].getType()) {
+                    } else if (board[k][j] == 'O') {
                         oStrikes++;
                         if (oStrikes == winCondition) {
                             return 'O';
@@ -189,19 +183,19 @@ public class Board {
     }
 
     //check lower half \ direction
-    private char checkLowerNDirection() {
+    private static char checkLowerNDirection() {
         int xStrikes = 0;
         int oStrikes = 0;
         for (int i = 1; i < ignoreR; i++) {
             for (int j = i, k = 0; j < size; j++, k++) {
                 try {
-                    if (board[j][k].getType()) {
+                    if (board[j][k] == 'X') {
                         xStrikes++;
                         if (xStrikes == winCondition) {
                             return 'X';
                         }
                         oStrikes = 0;
-                    } else if (!board[j][k].getType()) {
+                    } else if (board[j][k] == 'O') {
                         oStrikes++;
                         if (oStrikes == winCondition) {
                             return 'O';
@@ -218,19 +212,19 @@ public class Board {
     }
     
     //check upper half / direction
-    private char checkUpperPDirection() {
+    private static char checkUpperPDirection() {
         int xStrikes = 0;
         int oStrikes = 0;
         for (int i = ignoreL; i < size; i++) {
             for (int j = i, k = 0; j >= 0; j--, k++) {
                 try {
-                    if (board[k][j].getType()) {
+                    if (board[k][j] == 'X') {
                         xStrikes++;
                         if (xStrikes == winCondition) {
                             return 'X';
                         }
                         oStrikes = 0;
-                    } else if (!board[k][j].getType()) {
+                    } else if (board[k][j] == 'O') {
                         oStrikes++;
                         if (oStrikes == winCondition) {
                             return 'O';
@@ -247,19 +241,19 @@ public class Board {
     }
 
     //check lower half / direction
-    private char checkLowerPDirection() {
+    private static char checkLowerPDirection() {
         int xStrikes = 0;
         int oStrikes = 0;
         for (int i = 1; i < ignoreR; i++) {
             for (int j = i, k = size - 1; j < size; j++, k--) {
                 try {
-                    if (board[j][k].getType()) {
+                    if (board[j][k] == 'X') {
                         xStrikes++;
                         if (xStrikes == winCondition) {
                             return 'X';
                         }
                         oStrikes = 0;
-                    } else if (!board[j][k].getType()) {
+                    } else if (board[j][k] == 'O') {
                         oStrikes++;
                         if (oStrikes == winCondition) {
                             return 'O';
@@ -275,10 +269,10 @@ public class Board {
         return 'E';
     }
 
-    private boolean ifTie() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j] == null) {
+    private static boolean ifTie() {
+        for (int i = 0; i < Board.size; i++) {
+            for (int j = 0; j < Board.size; j++) {
+                if (board[i][j] != 0) {
                     return false;
                 }
             }
@@ -289,22 +283,23 @@ public class Board {
     /**
      * Print out the board position in the terminal
      */
-    public void printBoard() {
+    public static void printBoard() {
         for (int i = 0; i < size; i++) {
             printBoundry();
             for (int j = 0; j < size; j++) {
-                try {
-                    System.out.print("| " + board[i][j].getSymbol() + " ");
-                } catch (NullPointerException e) {
+                if (board[i][j] == 0) {
                     System.out.print("|   ");
+                } else {
+                    System.out.print("| " + board[i][j] + " ");
                 }
+
             }
             System.out.print("|\n");
         }
         printBoundry();
     }
     
-    private void printBoundry() {
+    private static void printBoundry() {
         for (int i = 0; i < size; i++) {
             System.out.print(" ---");
         }
@@ -315,17 +310,20 @@ public class Board {
      * It return the current situation of the board in terms of a 2D array of Piece
      * @return the board position
      */
-    private Piece[][] getStatus() {
+    public static char[][] getStatus() {
         return board;
     }  
 
+    
     /**
      * return the size of the board
      * @return size of board
      */
+    /*
     public int getBoardSize() {
         return size;
     }
+    */
 
     /**
      * return the win condition of the board
@@ -342,10 +340,12 @@ public class Board {
      * @param y the y axis location
      * @return if the location is empty or not, empty => true
      */
-    public boolean isAvailable(int x, int y) {
-        if (board[y][x] == null) {
+    /*
+    public static boolean isAvailable(int x, int y) {
+        if (board[y][x] == 0) {
             return true;
         }
         return false;
     }
+    */
 }
