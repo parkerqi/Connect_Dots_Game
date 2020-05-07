@@ -4,7 +4,6 @@
  * @author Parker Qi
  * @version 2.0.0
  * 
- * update summary see AIFirst class
  */
 public class Board {
     private static int size;
@@ -12,6 +11,8 @@ public class Board {
     private static int winCondition;
     private static int ignoreL;
     private static int ignoreR;
+    public static int piecePlaced = 0;
+    public static int totalPlaces;
 
     /**
      * The constructor for the board
@@ -24,11 +25,13 @@ public class Board {
         Board.board = new char[size][size];
         Board.ignoreL = winCondition - 1;
         Board.ignoreR = board[0].length- ignoreL;
+        Board.totalPlaces = size * size;
     }
 
     /**
      * Construcor of Board
      * @param b piece 2D array
+     * @param winCondition the number of pieces need to be connected to win. (diaginal connect counts) 
      */
     public Board(char[][] b, int winCondition) {
         Board.size = b[0].length;
@@ -36,6 +39,7 @@ public class Board {
         Board.board = b;
         Board.ignoreL = winCondition - 1;
         Board.ignoreR = board[0].length- ignoreL;
+        Board.totalPlaces = Board.size * Board.size;
     }
 
     /**
@@ -46,11 +50,14 @@ public class Board {
         Board.size = 15;
         Board.winCondition = 5;
         Board.board = new char[Board.size][Board.size];
+        Board.totalPlaces = Board.size * Board.size;
     }
 
     /**
      * To place a piece on the board (should only be used by player object)
-     * @param p piece object to place on the board
+     * @param x the x axis location for placing the piece
+     * @param y the y axis location for placing the piece
+     * @param player the player placing the piece, X is true, O is false
      * @throws OverridingLocationException thrown when the location has been occupied already
      */
     public static void placePiece(int x, int y, Boolean player) throws OverridingLocationException, IndexOutOfBoundsException{
@@ -61,6 +68,7 @@ public class Board {
         } else {
             board[y][x] = 'O';
         }
+        piecePlaced++;
     }
 
     /**
@@ -269,10 +277,14 @@ public class Board {
         return 'E';
     }
 
-    private static boolean ifTie() {
+    /**
+     * check if the board is filled or not
+     * @return if all filled return true, else return false
+     */
+    public static boolean ifTie() {
         for (int i = 0; i < Board.size; i++) {
             for (int j = 0; j < Board.size; j++) {
-                if (board[i][j] != 0) {
+                if (board[i][j] == 0) {
                     return false;
                 }
             }
@@ -308,22 +320,11 @@ public class Board {
 
     /**
      * It return the current situation of the board in terms of a 2D array of Piece
-     * @return the board position
+     * @return the board position in charactor 2d array
      */
     public static char[][] getStatus() {
         return board;
     }  
-
-    
-    /**
-     * return the size of the board
-     * @return size of board
-     */
-    /*
-    public int getBoardSize() {
-        return size;
-    }
-    */
 
     /**
      * return the win condition of the board
@@ -332,20 +333,4 @@ public class Board {
     public int getWinCondition() {
         return winCondition;
     }
-
-    /**
-     * check if the location on board is available
-     * !!!Attention!!! x, y location is the array location which means from 0 to size-1
-     * @param x the x axis location 
-     * @param y the y axis location
-     * @return if the location is empty or not, empty => true
-     */
-    /*
-    public static boolean isAvailable(int x, int y) {
-        if (board[y][x] == 0) {
-            return true;
-        }
-        return false;
-    }
-    */
 }

@@ -7,7 +7,6 @@ import java.util.Scanner;
  * @author parker.qi@hotmail.com
  * @version 1.1.0
  * 
- * update summary see AIFirst class
  */
 public class PlayGoMoKu {
     private static Scanner sc = new Scanner(System.in);
@@ -75,7 +74,7 @@ public class PlayGoMoKu {
             if (gameStatus == 'X') {
                 System.out.println("Player 1 wins.");
             } else if (gameStatus == 'T') {
-                System.out.println("Player 1 wins.");
+                System.out.println("Tie.");
             } else {
                 do {
                     try {
@@ -115,7 +114,7 @@ public class PlayGoMoKu {
      * @param board the board to place PvC on
      */
     private static void playPvC(Board board) {
-        AI ai = new AI(false);
+        AI ai = new AI(false, board.getWinCondition());
         HumanPlayer player = new HumanPlayer(true);
         char gameStatus = 'E';
         Board.printBoard();

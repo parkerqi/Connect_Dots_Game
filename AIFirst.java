@@ -7,12 +7,6 @@ import java.util.Scanner;
  * @author parker.qi@hotmail.com
  * @version 1.1.0
  * 
- * There are 4 major changes in this version
- * 1. Board class is now static
- * 2. the playing board is now a char 2d array
- * 3. Piece class is no longer in use
- * 4. abstract class Player added
- * these are done to refrain deep copying in minimax
  */
 public class AIFirst {
     private static Scanner sc = new Scanner(System.in);
@@ -36,7 +30,7 @@ public class AIFirst {
      * @param board the board to place PvC on
      */
     private static void playPvC(Board board) {
-        AI ai = new AI(true);
+        AI ai = new AI(true, board.getWinCondition());
         HumanPlayer player = new HumanPlayer(false);
         char gameStatus = 'E';
         while (gameStatus == 'E') {
